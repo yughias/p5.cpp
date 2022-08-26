@@ -1,5 +1,4 @@
 #include "p5.h"
-using namespace std;
 
 //->    FRAMERATE
 extern int fCount;
@@ -65,12 +64,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     setup();
 
     win_dim = {0, 0, width, height};
-    AdjustWindowRect(&win_dim, WS_OVERLAPPEDWINDOW, false);
+    AdjustWindowRect(&win_dim, WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, false);
 
     hWnd = CreateWindow(
             TEXT("GettingStarted"),   // window class name
             TEXT("Getting Started"),  // window caption
-            WS_OVERLAPPEDWINDOW,      // window style
+            WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,      // window style
             CW_USEDEFAULT,            // initial x position
             CW_USEDEFAULT,            // initial y position
             win_dim.right - win_dim.left,            // initial x size
@@ -93,12 +92,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         if(GetFocus() == hWnd)
             InvalidateRect(hWnd, NULL, false);
 
-        LPPOINT mouse_pos;
-        LPRECT windows_pos;
-        GetCursorPos(mouse_pos);
-        GetWindowRect(hWnd, windows_pos);
-        tmp_mx = mouse_pos->x - (windows_pos->left - win_dim.left);
-        tmp_my = mouse_pos->y - (windows_pos->top - win_dim.top);
+        POINT mouse_pos;
+        RECT windows_pos;
+        GetCursorPos(&mouse_pos);
+        GetWindowRect(hWnd, &windows_pos);
+        tmp_mx = mouse_pos.x - (windows_pos.left - win_dim.left);
+        tmp_my = mouse_pos.y - (windows_pos.top - win_dim.top);
     }
 
     return msg.wParam;
@@ -114,6 +113,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     switch(message)
     {
         case WM_PAINT:
+            
             now = milliseconds();
             delta = now - lastFrame;
 
