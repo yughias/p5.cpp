@@ -1,4 +1,5 @@
 #include "p5.h"
+
 //-> P5.CPP FUNCTIONS <-\\
 
 int w = 800;
@@ -43,10 +44,16 @@ bool setFrameRate(int val){
     return true;
 }
 
-void setPixel(int x, int y, int c){
+void set(int x, int y, int c){
     if(x < 0 || x >= width || y < 0 || y >= height)
         return;
     internBuffer[x + y*width] = c;
+}
+
+int get(int x, int y){
+    if(x < 0 || x >= width || y < 0 || y >= height)
+        return 0;
+    return internBuffer[x+y*width];
 }
 
 int color(int grayscale){
@@ -55,6 +62,18 @@ int color(int grayscale){
 
 int color(int r, int g, int b){
     return (255<<24) | (r<<16) | (g<<8) | b;
+}
+
+int red(int color){
+    return (color & 0xFF0000) >> 16;
+}
+
+int green(int color){
+    return (color & 0xFF00) >> 8;
+}
+
+int blue(int color){
+    return color & 0xFF;
 }
 
 void noFill(){
@@ -116,7 +135,7 @@ void line(int x0, int y0, int x1, int y1){
         //# Main loop
         for(int I=0; I<D; I++)
         {
-            setPixel(X, Y, colorStroke);
+            set(X, Y, colorStroke);
             //# Update (X, Y) and R
             X += Sx;
             R+= Dy; //# Lateral move
@@ -132,7 +151,7 @@ void line(int x0, int y0, int x1, int y1){
         //# Main loop
         for(int I=0; I<D; I++)
         {
-            setPixel(X, Y, colorStroke);
+            set(X, Y, colorStroke);
             //# Update (X, Y) and R
             Y += Sy;
             R += Dx; //# Lateral move
@@ -155,7 +174,7 @@ void rect(int x0, int y0, int w_, int h_){
     if(isFill){
         for(int y = y0+1; y < y0+h_; y++)
             for(int x = x0+1; x < x0+w_; x++)
-                setPixel(x, y, colorFill);
+                set(x, y, colorFill);
     }
 }
 
@@ -179,17 +198,17 @@ void ellipse(int x0, int y0, int rx, int ry){
     {
 
         if(isStroke) {
-            setPixel(x0+x, y+y0, colorStroke);
-            setPixel(x0-x, y+y0, colorStroke);
-            setPixel(x0+x, -y+y0, colorStroke);
-            setPixel(x0-x, -y+y0, colorStroke);
+            set(x0+x, y+y0, colorStroke);
+            set(x0-x, y+y0, colorStroke);
+            set(x0+x, -y+y0, colorStroke);
+            set(x0-x, -y+y0, colorStroke);
         }
 
         if(isFill){
             for(int xx = x0-x+1; xx < x0+x; xx++){
                 if(int(y) != ry) {
-                    setPixel(xx, y0-y, colorFill);
-                    setPixel(xx, y0+y, colorFill);
+                    set(xx, y0-y, colorFill);
+                    set(xx, y0+y, colorFill);
                 }
             }
         }
@@ -223,17 +242,17 @@ void ellipse(int x0, int y0, int rx, int ry){
 
         if(isStroke) {
             // Print points based on 4-way symmetry
-            setPixel(x0+x, y+y0, colorStroke);
-            setPixel(x0-x, y+y0, colorStroke);
-            setPixel(x0+x, -y+y0, colorStroke);
-            setPixel(x0-x, -y+y0, colorStroke);
+            set(x0+x, y+y0, colorStroke);
+            set(x0-x, y+y0, colorStroke);
+            set(x0+x, -y+y0, colorStroke);
+            set(x0-x, -y+y0, colorStroke);
         }
 
         if(isFill){
             for(int xx = x0-x+1; xx < x0+x; xx++){
                 if(int(y) != ry) {
-                    setPixel(xx, y0-y, colorFill);
-                    setPixel(xx, y0+y, colorFill);
+                    set(xx, y0-y, colorFill);
+                    set(xx, y0+y, colorFill);
                 }
             }
         }
@@ -273,4 +292,17 @@ void updatePixels() {
 
 float map(float value, float start1, float stop1, float start2, float stop2){
     return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+}
+
+float dist(float x0, float y0, float x1, float y1){
+    return sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0));
+}
+
+float lerp(float v0, float v1, float t){
+    return (1 - t) * v0 + t * v1;
+}
+
+
+void playAsyncWav(const char* filename){
+    PlaySound(TEXT(filename), NULL, SND_FILENAME | SND_ASYNC);
 }
