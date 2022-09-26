@@ -1,4 +1,5 @@
-#include "p5.h"
+#include "../include/p5.h"
+#include <windows.h>
 
 //->    FRAMERATE
 extern int fCount;

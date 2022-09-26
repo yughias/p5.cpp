@@ -1,9 +1,3 @@
-#include <windows.h>
-#include <iostream>
-#include <ctime>
-
-using namespace std;
-
 #define LEFT 37
 #define UP 38
 #define RIGHT 39

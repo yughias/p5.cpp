@@ -1,2 +1,2 @@
 all:
-	g++ main.cpp p5.cpp window.cpp -lgdi32 -lwinmm
+	g++ main.cpp src/*.cpp -lgdi32 -lwinmm
